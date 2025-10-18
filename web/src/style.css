@@ -24,62 +24,648 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Landing Page Styles */
+.landing-page {
+  background: rgb(250, 250, 250);
+  min-height: 100vh;
 }
 
-#app {
-  max-width: 1280px;
+.landing-container {
+  position: relative;
+  isolation: isolate;
+  padding: 0 1.5rem;
+ 
+}
+
+@media (min-width: 1024px) {
+  .landing-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.gradient-blob-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10rem;
+  z-index: -10;
+  transform: translateZ(0);
+  overflow: hidden;
+  filter: blur(75px);
+}
+
+@media (min-width: 640px) {
+  .gradient-blob-top {
+    top: -20rem;
+  }
+}
+
+.gradient-blob-shape-top {
+  position: relative;
+  left: calc(50% - 11rem);
+  aspect-ratio: 1155 / 678;
+  width: 36.125rem;
+  transform: translateX(-50%) rotate(30deg);
+  background: linear-gradient(to top right, #ff80b5, #9089fc);
+  opacity: 0.3;
+  clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%);
+}
+
+@media (min-width: 640px) {
+  .gradient-blob-shape-top {
+    left: calc(50% - 30rem);
+    width: 72.1875rem;
+  }
+}
+
+.hero-content {
+  max-width: 42rem;
   margin: 0 auto;
-  padding: 2rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 640px) {
+  .hero-content {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-content {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+}
+
+.hero-text-center {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #111827;
+  line-height: 1.1;
 }
 
-.card {
-  padding: 2em;
+@media (min-width: 640px) {
+  .hero-title {
+    font-size: 4.5rem;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+.hero-description {
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 2rem;
+  color: #4b5563;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.hero-buttons {
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.get-started-btn {
+  border-radius: 0.375rem;
+  background: #4f46e5;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: none;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.2s;
 }
-button:hover {
-  border-color: #646cff;
+
+.get-started-btn:hover {
+  background: #4338ca;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.get-started-btn:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.learn-more-link {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  color: #111827;
+  text-decoration: none;
+}
+
+.learn-more-link:hover {
+  color: #4f46e5;
+}
+
+
+
+
+
+
+/* Dark mode support for landing page */
+@media (prefers-color-scheme: dark) {
+  .landing-page {
+    background: #111827;
+  }
+  
+  .hero-title {
+    color: white;
+  }
+  
+  .hero-description {
+    color: #9ca3af;
+  }
+  
+  .learn-more-link {
+    color: white;
+  }
+}
+
+/* App Page Styles */
+.app-page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #eef2ff, #ffffff, #faf5ff);
+}
+
+.app-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.app-header-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-logo-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(to bottom right, #4f46e5, #7c3aed);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-logo-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.app-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.back-home-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.back-home-btn:hover {
+  color: #4f46e5;
+}
+
+.back-home-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.main-content {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Wallet Card */
+.wallet-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.wallet-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.wallet-icon {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(to bottom right, #fb923c, #ec4899);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wallet-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: white;
+}
+
+.wallet-text h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+}
+
+.wallet-text p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.wallet-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.account-display {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.connect-btn {
+  padding: 0.625rem 1.5rem;
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  color: white;
+  border-radius: 0.75rem;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.connect-btn:hover {
+  background: linear-gradient(to right, #4338ca, #6d28d9);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Upload Card */
+.upload-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.upload-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.upload-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(to bottom right, #3b82f6, #06b6d4);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.upload-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.file-input {
+  display: block;
+  width: 100%;
+  font-size: 0.875rem;
+  color: #111827;
+  border: 2px solid #d1d5db;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  background: #f9fafb;
+  padding: 0.75rem;
+  transition: all 0.2s;
+}
+
+.file-input:hover {
+  background: #f3f4f6;
+}
+
+.file-input:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+.text-input {
+  display: block;
+  width: 100%;
+  border: 2px solid #d1d5db;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #111827;
+  transition: all 0.2s;
+}
+
+.text-input::placeholder {
+  color: #9ca3af;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #4f46e5;
+}
+
+.upload-btn {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: white;
+  border-radius: 0.75rem;
+  border: none;
+  font-weight: 600;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.upload-btn:hover {
+  background: linear-gradient(to right, #1d4ed8, #4338ca);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.upload-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.status-message {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* Files Card */
+.files-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+  padding: 2rem;
+}
+
+.files-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.files-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(to bottom right, #10b981, #059669);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.files-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.files-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.files-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* File Item */
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: linear-gradient(to right, #f9fafb, #f3f4f6);
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.file-item:hover {
+  background: linear-gradient(to right, #eef2ff, #faf5ff);
+  border-color: #c7d2fe;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-icon-wrapper {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(to bottom right, #3b82f6, #4f46e5);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.file-icon-wrapper svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: white;
+}
+
+.file-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-link {
+  color: #4f46e5;
+  font-weight: 600;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.file-link:hover {
+  color: #4338ca;
+  text-decoration: underline;
+}
+
+.file-timestamp {
+  font-size: 0.75rem;
+  color: #6b7280;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.file-timestamp svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  display: inline;
+  margin-right: 0.25rem;
+}
+
+.delete-btn {
+  margin-left: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #ef4444;
+  color: white;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.delete-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-state svg {
+  width: 4rem;
+  height: 4rem;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.empty-state p:first-of-type {
+  color: #6b7280;
+  font-weight: 500;
+  margin: 0 0 0.25rem 0;
+}
+
+.empty-state p:last-of-type {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin: 0;
 }
 
 @media (prefers-color-scheme: light) {

@@ -1,5 +1,5 @@
 // Fill these after deploying the contract
-export const CONTRACT_ADDRESS = "0xFA57d5C9C33289DCd92AAf1C9Fa112A127e543cc"; // e.g. 0x1234...
+export const CONTRACT_ADDRESS = "0x22B3272eDAB62d7272bB103f1CCE7F86978ea436"; // Deployed to Sepolia
 export const CONTRACT_ABI = [
   {
     inputs: [
@@ -27,6 +27,15 @@ export const CONTRACT_ABI = [
       }
     ],
     stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "index", type: "uint256" }
+    ],
+    name: "removeFile",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function"
   }
 ] as const;

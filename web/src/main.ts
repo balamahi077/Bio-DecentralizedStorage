@@ -52,29 +52,92 @@ connectBtn.onclick = async () => {
 
 async function refreshFiles() {
   if (!signer || !CONTRACT_ADDRESS) return
-  const contract = getContract(signer, CONTRACT_ADDRESS, CONTRACT_ABI)
-  const items = await contract.getMyFiles()
-  filesList.innerHTML = ''
-  for (const item of items) {
+  
+  try {
+    const contract = getContract(signer, CONTRACT_ADDRESS, CONTRACT_ABI)
+    const items = await contract.getMyFiles()
+    filesList.innerHTML = ''
+    
+    if (!items || items.length === 0) {
+      const li = document.createElement('li')
+      li.textContent = 'No files found. Upload some files to get started!'
+      li.className = 'text-gray-500 italic'
+      filesList.appendChild(li)
+      return
+    }
+    
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      const li = document.createElement('li')
+      const url = `https://ipfs.io/ipfs/${item.cid}`
+      
+      // Create view link
+      const viewLink = document.createElement('a')
+      viewLink.href = url
+      viewLink.target = '_blank'
+      viewLink.className = 'text-blue-600 underline'
+      viewLink.textContent = item.name || item.cid
+      
+      // Create delete button
+      const deleteBtn = document.createElement('button')
+      deleteBtn.textContent = 'Delete'
+      deleteBtn.className = 'ml-2 px-2 py-1 bg-red-500 text-white rounded text-sm'
+      deleteBtn.onclick = () => deleteFile(i)
+      
+      // Create timestamp span
+      const timestamp = document.createElement('span')
+      timestamp.className = 'text-xs text-gray-500 ml-2'
+      timestamp.textContent = `(${new Date(Number(item.timestamp) * 1000).toLocaleString()})`
+      
+      li.appendChild(viewLink)
+      li.appendChild(deleteBtn)
+      li.appendChild(timestamp)
+      filesList.appendChild(li)
+    }
+  } catch (e: any) {
+    filesList.innerHTML = ''
     const li = document.createElement('li')
-    const url = `https://ipfs.io/ipfs/${item.cid}`
-    li.innerHTML = `<a class="text-blue-600 underline" href="${url}" target="_blank">${item.name || item.cid}</a> <span class="text-xs text-gray-500">(${item.timestamp})</span>`
+    li.textContent = `Error loading files: ${e.message}`
+    li.className = 'text-red-500'
     filesList.appendChild(li)
+    console.error('Error refreshing files:', e)
   }
 }
+
+async function deleteFile(index: number) {
+  try {
+    if (!signer || !CONTRACT_ADDRESS) return
+    
+    const confirmed = confirm('Are you sure you want to delete this file? This action cannot be undone.')
+    if (!confirmed) return
+    
+    statusDiv.textContent = 'Deleting file...'
+    const contract = getContract(signer, CONTRACT_ADDRESS, CONTRACT_ABI)
+    const tx = await contract.removeFile(index)
+    await tx.wait()
+    
+    statusDiv.textContent = 'File deleted successfully!'
+    await refreshFiles()
+  } catch (e: any) {
+    statusDiv.textContent = `Delete failed: ${e.message}`
+    console.error('Delete error:', e)
+  }
+}
+
 
 uploadBtn.onclick = async () => {
   try {
     if (!signer) throw new Error('Connect wallet first')
     if (!CONTRACT_ADDRESS) throw new Error('Set CONTRACT_ADDRESS in src/contract.ts')
     const file = fileInput.files?.[0]
+    
     if (!file) throw new Error('Choose a file')
     statusDiv.textContent = 'Uploading to IPFS via Pinata...'
 
     // For dev, set PINATA_JWT in a .env and expose via a tiny proxy. For demo, paste manually:
     const jwt = (window as any).PINATA_JWT || ''
     if (!jwt) throw new Error('Provide Pinata JWT in window.PINATA_JWT')
-    const cid = await uploadToPinata(file, jwt)
+    const cid = await uploadToPinata(file, jwt);
 
     statusDiv.textContent = `Pinned: ${cid}. Sending tx...`
     const contract = getContract(signer, CONTRACT_ADDRESS, CONTRACT_ABI)

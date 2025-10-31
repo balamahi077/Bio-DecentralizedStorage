@@ -1,8 +1,12 @@
-import './index.css'
-import './style.css'
+import './index.css'  // Tailwind base styles
+import './style.css'  // Custom styles
+import './auth-styles.css'  // Auth page styles
 import { connectWallet, getContract } from './wallet'
 import { uploadToPinata } from './pinata'
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from './contract'
+import { isAuthenticated, getUsername, logout } from './auth'
+import { renderLoginPage } from './pages/login'
+import { renderRegisterPage } from './pages/register'
 import '@tailwindplus/elements'
 
 // App state
@@ -11,8 +15,31 @@ let signer: any
 
 // Render landing page
 function renderLandingPage() {
+  const authenticated = isAuthenticated()
+  const username = getUsername()
+  
   document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <div class="landing-page">
+      <!-- User Info Header (if authenticated) -->
+      ${authenticated ? `
+        <div class="user-info-header">
+          <div class="user-info-container">
+            <div class="user-welcome">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="user-icon">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+              <span class="username-display">👤 ${username}</span>
+            </div>
+            <button id="logout-btn" class="logout-btn">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      ` : ''}
+      
       <div class="landing-container">
         <div aria-hidden="true" class="gradient-blob-top">
           
@@ -24,12 +51,27 @@ function renderLandingPage() {
               Decentralized Storage on IPFS
             </h1>
             <p class="hero-description">
-              Store your files securely on IPFS with blockchain verification. Connect your MetaMask wallet and start uploading files to the decentralized web.
+              Store your files securely on IPFS with blockchain verification. ${authenticated ? 'You are logged in and ready to go!' : 'Login with face recognition to get started.'}
             </p>
             <div class="hero-buttons">
-              <button id="get-started" class="get-started-btn">
-                Get started
-              </button>
+              ${authenticated ? `
+                <button id="get-started" class="get-started-btn">
+                  Get started
+                </button>
+              ` : `
+                <button id="login-btn" class="primary-btn">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                  </svg>
+                  Login with Face
+                </button>
+                <button id="register-btn" class="secondary-btn">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                  </svg>
+                  Register New Account
+                </button>
+              `}
               <a href="#features" class="learn-more-link">
                 Learn more <span aria-hidden="true">→</span>
               </a>
@@ -42,17 +84,69 @@ function renderLandingPage() {
     </div>
   `
   
-  // Attach event listener to "Get Started" button
-  const getStartedBtn = document.getElementById('get-started')
-  if (getStartedBtn) {
-    getStartedBtn.onclick = () => {
-      renderAppPage()
+  // Attach event listeners
+  if (authenticated) {
+    const getStartedBtn = document.getElementById('get-started')
+    const logoutBtn = document.getElementById('logout-btn')
+    
+    if (getStartedBtn) {
+      getStartedBtn.onclick = () => {
+        renderAppPage()
+      }
+    }
+    
+    if (logoutBtn) {
+      logoutBtn.onclick = () => {
+        logout()
+        renderLandingPage()
+      }
+    }
+  } else {
+    const loginBtn = document.getElementById('login-btn')
+    const registerBtn = document.getElementById('register-btn')
+    
+    if (loginBtn) {
+      loginBtn.onclick = () => {
+        renderLoginPage(
+          () => renderLandingPage(), // On success
+          () => renderLandingPage(), // On back
+          () => renderRegisterPage( // On register link
+            () => renderLoginPage(
+              () => renderLandingPage(),
+              () => renderLandingPage(),
+              () => {}
+            ),
+            () => renderLandingPage()
+          )
+        )
+      }
+    }
+    
+    if (registerBtn) {
+      registerBtn.onclick = () => {
+        renderRegisterPage(
+          () => renderLoginPage( // After registration, go to login
+            () => renderLandingPage(),
+            () => renderLandingPage(),
+            () => {}
+          ),
+          () => renderLandingPage() // On back
+        )
+      }
     }
   }
 }
 
-// Render app page
+// Render app page (protected - requires authentication)
 function renderAppPage() {
+  // Check authentication
+  if (!isAuthenticated()) {
+    alert('Please login first to access the app')
+    renderLandingPage()
+    return
+  }
+  
+  const username = getUsername()
   document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <div class="app-page">
       <!-- Header -->
@@ -64,7 +158,10 @@ function renderAppPage() {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
               </svg>
             </div>
-            <h1 class="app-title">IPFS Storage</h1>
+            <div class="app-title-section">
+              <h1 class="app-title">IPFS Storage</h1>
+              <span class="app-user">👤 ${username}</span>
+            </div>
           </div>
           <button id="back-home" class="back-home-btn">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

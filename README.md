@@ -33,7 +33,6 @@ A modern, decentralized file storage application that combines blockchain techno
 - **Python + Flask** - Face recognition server
 - **OpenCV** - Computer vision
 - **face_recognition** - Face detection & encoding
-
 ### Smart Contracts
 - **Hardhat v2** - Development environment
 - **Solidity 0.8.24** - Smart contract language
@@ -222,12 +221,12 @@ npm run preview
 4. Confirm the transaction in MetaMask
 5. Wait for the upload to complete
 
-### Step 3: View Your Files
+### Step 6: View Your Files
 - Your uploaded files will appear in the **"Your Files"** section
 - Click on any file name to view it via the IPFS gateway
 - Each file shows the upload timestamp
 
-### Step 4: Delete Files
+### Step 7: Delete Files
 - Click the **Delete** button next to any file
 - Confirm the transaction in MetaMask
 - The file metadata will be removed from the blockchain
@@ -307,7 +306,6 @@ Bio-DecentralizedStorage/
 3. **Protect Raspberry Pi** - Change default password, use SSH keys
 4. **HTTPS Only** - Use SSL certificates in production
 5. **Local Processing** - Face data never leaves your network
-
 ### Recommended Production Setup
 
 Create a serverless function (e.g., Vercel, Netlify, AWS Lambda) to:
@@ -328,7 +326,6 @@ Create a serverless function (e.g., Vercel, Netlify, AWS Lambda) to:
 ### Deployment Guides
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Deploy to various platforms
 - **[MOBILE_APP_PLAN.md](./MOBILE_APP_PLAN.md)** - Mobile app development plan
-
 ## 🧪 Testing
 
 ### Smart Contract Tests

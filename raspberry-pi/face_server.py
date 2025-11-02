@@ -4,7 +4,7 @@ Face Recognition Server for Raspberry Pi
 Captures face images and performs face verification
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import face_recognition
 import cv2
@@ -13,6 +13,7 @@ import os
 from datetime import datetime
 import json
 import time
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -334,6 +335,97 @@ def test_camera():
             'channels': channels,
             'message': 'Camera is working properly'
         })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+def generate_frames():
+    """Generate video frames for streaming"""
+    global camera
+    
+    if camera is None or not camera.isOpened():
+        if not init_camera():
+            return
+    
+    while True:
+        try:
+            ret, frame = camera.read()
+            if not ret:
+                break
+            
+            # Detect faces and draw rectangles for preview
+            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            face_locations = face_recognition.face_locations(rgb_frame, model='hog')
+            
+            # Draw rectangles around detected faces
+            for (top, right, bottom, left) in face_locations:
+                cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+                cv2.putText(frame, 'Face Detected', (left, top - 10), 
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            
+            # Add instructions overlay
+            cv2.putText(frame, 'Position your face in the green rectangle', 
+                       (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            
+            # Encode frame as JPEG
+            ret, buffer = cv2.imencode('.jpg', frame)
+            if not ret:
+                continue
+                
+            frame_bytes = buffer.tobytes()
+            
+            # Yield frame in multipart format
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+                   
+        except Exception as e:
+            print(f"Error in generate_frames: {e}")
+            break
+        
+        time.sleep(0.1)  # Limit to ~10 FPS
+
+@app.route('/video-feed')
+def video_feed():
+    """Video streaming route"""
+    return Response(generate_frames(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/preview-frame', methods=['GET'])
+def preview_frame():
+    """Get a single frame as base64 for preview"""
+    try:
+        frame = capture_frame()
+        
+        # Detect faces and draw rectangles
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        face_locations = face_recognition.face_locations(rgb_frame, model='hog')
+        
+        # Draw rectangles around detected faces
+        for (top, right, bottom, left) in face_locations:
+            cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+            cv2.putText(frame, 'Face Detected', (left, top - 10), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+        
+        # Add instructions overlay
+        cv2.putText(frame, 'Position your face in the frame', 
+                   (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+        
+        # Encode frame as JPEG and convert to base64
+        ret, buffer = cv2.imencode('.jpg', frame)
+        if not ret:
+            raise Exception("Failed to encode frame")
+        
+        frame_base64 = base64.b64encode(buffer).decode('utf-8')
+        
+        return jsonify({
+            'success': True,
+            'frame': f'data:image/jpeg;base64,{frame_base64}',
+            'facesDetected': len(face_locations),
+            'message': f'{len(face_locations)} face(s) detected' if face_locations else 'No faces detected'
+        })
+        
     except Exception as e:
         return jsonify({
             'success': False,

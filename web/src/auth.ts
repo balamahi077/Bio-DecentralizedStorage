@@ -1,6 +1,7 @@
 // Authentication service for face recognition login/register
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/auth'
+const CAMERA_API_URL = 'http://raspberrypi.local:5000' // Raspberry Pi camera server
 
 export interface User {
   username: string
@@ -112,4 +113,35 @@ export function logout() {
 // Get auth token for API requests
 export function getAuthToken(): string | null {
   return localStorage.getItem('authToken')
+}
+
+// Camera preview functions
+export async function getCameraPreview(): Promise<{ success: boolean, frame?: string, facesDetected?: number, error?: string }> {
+  try {
+    const response = await fetch(`${CAMERA_API_URL}/preview-frame`)
+    const data = await response.json()
+    return data
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Cannot connect to camera server. Make sure Raspberry Pi is running.'
+    }
+  }
+}
+
+export async function checkCameraHealth(): Promise<{ success: boolean, camera?: string, error?: string }> {
+  try {
+    const response = await fetch(`${CAMERA_API_URL}/health`)
+    const data = await response.json()
+    return data
+  } catch (error) {
+    return {
+      success: false,
+      error: 'Cannot connect to camera server'
+    }
+  }
+}
+
+export function getCameraStreamUrl(): string {
+  return `${CAMERA_API_URL}/video-feed`
 }

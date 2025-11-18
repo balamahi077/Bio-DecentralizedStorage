@@ -1,7 +1,7 @@
 // Authentication service for face recognition login/register
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/auth'
-const CAMERA_API_URL = 'http://raspberrypi.local:5000' // Raspberry Pi camera server
+const CAMERA_API_URL = 'http://10.153.144.14:5000' // Raspberry Pi camera server
 
 export interface User {
   username: string

@@ -316,6 +316,16 @@ function setupAppEventListeners() {
     
     try {
       const contract = getContract(signer, CONTRACT_ADDRESS, CONTRACT_ABI)
+      
+      // Add debugging and better error handling
+      console.log('Calling getMyFiles on contract:', CONTRACT_ADDRESS)
+      
+      // Check if contract exists at address
+      const code = await signer.provider?.getCode(CONTRACT_ADDRESS)
+      if (!code || code === '0x') {
+        throw new Error(`No contract found at address ${CONTRACT_ADDRESS}. Please check the contract address and network.`)
+      }
+      
       const items = await contract.getMyFiles()
       filesList.innerHTML = ''
       

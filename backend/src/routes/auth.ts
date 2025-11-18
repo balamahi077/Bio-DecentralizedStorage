@@ -5,7 +5,7 @@ import User from '../models/User'
 
 const router = express.Router()
 
-const RASPBERRY_PI_URL = process.env.RASPBERRY_PI_URL || 'http://10.254.8.14:5000'
+const RASPBERRY_PI_URL = process.env.RASPBERRY_PI_URL || 'http://10.153.144.14:5000'
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-this'
 
 // Health check

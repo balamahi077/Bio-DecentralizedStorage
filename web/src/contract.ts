@@ -1,5 +1,5 @@
 // Fill these after deploying the contract
-export const CONTRACT_ADDRESS = "0x22B3272eDAB62d7272bB103f1CCE7F86978ea436"; // Deployed to Sepolia
+export const CONTRACT_ADDRESS = "0x05864fBD433c5e3eA1a005D51a8aF0fab0386778"; // Deployed to Sepolia
 export const CONTRACT_ABI = [
   {
     inputs: [
@@ -30,12 +30,14 @@ export const CONTRACT_ABI = [
     type: "function"
   },
   {
+    anonymous: false,
     inputs: [
-      { internalType: "uint256", name: "index", type: "uint256" }
+      { indexed: true, internalType: "address", name: "owner", type: "address" },
+      { indexed: false, internalType: "string", name: "cid", type: "string" },
+      { indexed: false, internalType: "string", name: "name", type: "string" },
+      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" }
     ],
-    name: "removeFile",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function"
+    name: "FileAdded",
+    type: "event"
   }
 ] as const;

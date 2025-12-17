@@ -367,4 +367,3 @@ For questions or support, please open an issue on GitHub.
 
 ---
 
-**Made with ❤️ by [balamahi077](https://github.com/balamahi077)**
